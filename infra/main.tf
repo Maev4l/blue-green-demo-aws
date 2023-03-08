@@ -1,9 +1,13 @@
 provider "aws" {
-  region = "eu-central-1"
+  region = var.region
   default_tags {
     tags = {
       "owner"       = "terraform"
       "application" = "blue-green-demo"
     }
   }
+}
+
+
+data "aws_availability_zones" "azs" {
 }
