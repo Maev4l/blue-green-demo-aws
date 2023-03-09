@@ -1,5 +1,5 @@
-resource "aws_instance" "blue" {
-  count                       = var.enable_blue_env ? var.blue_instance_count : 0
+resource "aws_instance" "green" {
+  count                       = var.enable_green_env ? var.green_instance_count : 0
   ami                         = data.aws_ami.amazon_linux.id
   instance_type               = "t2.micro"
   subnet_id                   = element(aws_subnet.public_subnet[*].id, count.index) // count.index % length(module.vpc.public_subnets)
@@ -8,16 +8,16 @@ resource "aws_instance" "blue" {
   associate_public_ip_address = true                             // FIXME to be removed
   key_name                    = aws_key_pair.public_key.key_name // FIXME to be removed
   user_data = templatefile("${path.module}/cloudinit.tftpl", {
-    version = var.blue_app_version
+    version = var.green_app_version
   })
   tags = {
-    Name       = "blue-${count.index}"
-    AppVersion = var.blue_app_version
+    Name       = "green-${count.index}"
+    AppVersion = var.green_app_version
   }
 }
 
-resource "aws_lb_target_group" "blue" {
-  name       = "blue-tg"
+resource "aws_lb_target_group" "green" {
+  name       = "green-tg"
   port       = 80
   protocol   = "HTTP"
   vpc_id     = aws_vpc.main.id
@@ -29,9 +29,9 @@ resource "aws_lb_target_group" "blue" {
     interval = 30
   }
 }
-resource "aws_lb_target_group_attachment" "blue" {
-  count            = length(aws_instance.blue)
-  target_group_arn = aws_lb_target_group.blue.arn
-  target_id        = aws_instance.blue[count.index].id
+resource "aws_lb_target_group_attachment" "green" {
+  count            = length(aws_instance.green)
+  target_group_arn = aws_lb_target_group.green.arn
+  target_id        = aws_instance.green[count.index].id
   port             = 80
 }

@@ -1,4 +1,29 @@
 
+locals {
+  traffic_distribution = {
+    blue = {
+      blue  = 100
+      green = 0
+    }
+    blue-75 = {
+      blue  = 75
+      green = 10
+    }
+    even = {
+      blue  = 50
+      green = 50
+    }
+    green-75 = {
+      blue  = 10
+      green = 75
+    }
+    green = {
+      blue  = 0
+      green = 100
+    }
+  }
+}
+
 resource "aws_security_group" "sg_lb" {
   name        = "demo-blue-green-lb-sg"
   description = "Security group for load balancer with HTTP ports open within VPC"
@@ -35,7 +60,21 @@ resource "aws_lb_listener" "app" {
   port              = "80"
   protocol          = "HTTP"
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.blue.arn
+    type = "forward"
+    forward {
+      target_group {
+        arn    = aws_lb_target_group.blue.arn
+        weight = lookup(local.traffic_distribution[var.traffic_distribution], "blue", 100)
+      }
+      target_group {
+        arn    = aws_lb_target_group.green.arn
+        weight = lookup(local.traffic_distribution[var.traffic_distribution], "green", 0)
+      }
+
+      stickiness {
+        duration = 1
+      }
+
+    }
   }
 }

@@ -5,3 +5,7 @@ output "lb_public_dns" {
 output "blue_instances" {
   value = aws_instance.blue[*].id
 }
+
+output "green_instances" {
+  value = aws_instance.green[*].id
+}
