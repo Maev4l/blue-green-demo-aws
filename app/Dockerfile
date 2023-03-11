@@ -1,12 +1,23 @@
-FROM python:3-alpine as builder
 ARG APP_VERSION
 
-RUN pip3 install jinja2-cli[yaml,toml,xml]==0.8.2
+FROM golang:alpine3.17 as builder
+ARG APP_VERSION
+WORKDIR /app
 
-COPY index.html.j2 /
+COPY go.mod ./
+COPY go.sum ./
 
-RUN jinja2 -D APP_VERSION=$APP_VERSION /index.html.j2 > index.html
+RUN go mod download
 
-FROM nginx:alpine
+COPY cmd/ ./
+COPY templates/ ./templates/
 
-COPY --from=builder /index.html /usr/share/nginx/html
+RUN GOOS=linux go build -ldflags="-s -w" 
+
+FROM alpine:3.17
+ARG APP_VERSION
+ENV VERSION=$APP_VERSION
+COPY --from=builder /app/bgdemo /bgdemo
+COPY --from=builder /app/templates/index.tmpl /templates/index.tmpl
+
+CMD [ "/bgdemo" ]
