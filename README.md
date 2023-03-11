@@ -1,5 +1,13 @@
 # Blue Green Deployment demo
 
+## Packer
+
+Build the AMI
+
+```shell
+packer build .
+```
+
 ## Terraform
 
 #### Inital state v1

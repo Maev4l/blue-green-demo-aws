@@ -1,9 +1,9 @@
-data "aws_ami" "amazon_linux" {
+data "aws_ami" "linux_image" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["self"]
   filter {
     name   = "name"
-    values = ["amzn2-ami-ecs-hvm-2.0.20230214-x86_64-ebs"]
+    values = ["bg-demo-ubuntu-minimal-*"]
   }
 }
 
