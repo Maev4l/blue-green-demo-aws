@@ -19,6 +19,15 @@ resource "aws_launch_template" "green_launch_template" {
     security_groups             = [aws_security_group.sg_instance.id]
   }
 
+  # Specify all options, otherwise the instance_metadata_tags argument is not
+  # taken into account
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "optional"
+    http_put_response_hop_limit = 1
+    instance_metadata_tags      = "enabled"
+  }
+
   key_name = aws_key_pair.public_key.key_name // FIXME to be removed
 }
 
@@ -46,6 +55,12 @@ resource "aws_autoscaling_group" "green_asg" {
   tag {
     key                 = "Name"
     value               = "Green"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "Color"
+    value               = "green"
     propagate_at_launch = true
   }
 }

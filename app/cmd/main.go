@@ -29,9 +29,19 @@ func main() {
 			}
 		}
 
+		resp, err = client.Get("http://169.254.169.254/latest/meta-data/tags/instance/Color")
+		color := "black"
+		if err == nil {
+			body, err := io.ReadAll(resp.Body)
+			if err == nil {
+				color = string(body)
+			}
+		}
+
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
 			"app_version": version,
 			"instance_id": instance_id,
+			"color":       color,
 		})
 	})
 	router.Run(":8080")
