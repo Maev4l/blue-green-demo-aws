@@ -3,6 +3,12 @@ variable "region" {
   default = "eu-central-1"
 }
 
+variable "enable_bastion" {
+  description = "Enable Bastion"
+  type        = bool
+  default     = false
+}
+
 variable "public_subnet_count" {
   description = "Number of public subnets."
   type        = number

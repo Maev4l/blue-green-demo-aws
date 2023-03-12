@@ -1,3 +1,4 @@
+enable_bastion       = false
 traffic_distribution = "blue"
 enable_blue_env      = false
 enable_green_env     = false

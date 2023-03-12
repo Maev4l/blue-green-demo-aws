@@ -1,4 +1,5 @@
 resource "aws_instance" "bastion" {
+  count         = var.enable_bastion ? 1 : 0
   ami           = data.aws_ami.linux_image.id
   instance_type = "t2.nano"
 

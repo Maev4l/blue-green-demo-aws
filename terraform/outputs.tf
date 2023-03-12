@@ -2,12 +2,6 @@ output "lb_public_dns" {
   value = aws_lb.lb.dns_name
 }
 
-/*
-output "blue_instances" {
-  value = aws_instance.blue[*].id
+output "bastion_dns" {
+  value = one(aws_instance.bastion[*].public_dns)
 }
-
-output "green_instances" {
-  value = aws_instance.green[*].id
-}
-*/
