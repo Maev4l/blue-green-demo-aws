@@ -1,4 +1,4 @@
 #cloud-config
 runcmd:
-  - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 671123374425.dkr.ecr.eu-central-1.amazonaws.com
-  - docker run -d -p 80:8080 --restart always 671123374425.dkr.ecr.eu-central-1.amazonaws.com/demo/blue-green:${version}
+  - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${account}.dkr.ecr.eu-central-1.amazonaws.com
+  - docker run -d -p 80:8080 --restart always ${account}.dkr.ecr.${region}.amazonaws.com/demo/blue-green:${version}

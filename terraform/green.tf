@@ -10,14 +10,13 @@ resource "aws_launch_template" "green_launch_template" {
 
   user_data = base64encode(templatefile("${path.module}/cloudinit.tftpl", {
     version = var.green_app_version
+    region  = var.region
+    account = data.aws_caller_identity.current.account_id
   }))
 
   update_default_version = true
 
-  network_interfaces {
-    associate_public_ip_address = true // FIXME to be removed
-    security_groups             = [aws_security_group.sg_instance.id]
-  }
+  vpc_security_group_ids = [aws_security_group.sg_instance.id]
 
   # Specify all options, otherwise the instance_metadata_tags argument is not
   # taken into account
@@ -33,7 +32,7 @@ resource "aws_launch_template" "green_launch_template" {
 
 resource "aws_autoscaling_group" "green_asg" {
   name                = "green-instance-asg"
-  vpc_zone_identifier = aws_subnet.public_subnet[*].id
+  vpc_zone_identifier = aws_subnet.private_subnet[*].id
 
   desired_capacity = var.enable_green_env ? var.green_instance_count : 0
   max_size         = 10

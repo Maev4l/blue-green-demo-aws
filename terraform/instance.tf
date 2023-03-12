@@ -9,17 +9,8 @@ data "aws_ami" "linux_image" {
 
 resource "aws_security_group" "sg_instance" {
   name        = "demo-blue-green-instance-sg"
-  description = "Security group for load balancer with HTTP ports open within VPC"
+  description = "Security group for instances with HTTP ports open within VPC"
   vpc_id      = aws_vpc.main.id
-}
-
-// FIXME For debug
-resource "aws_vpc_security_group_ingress_rule" "ingress_rules_ssh_instance" {
-  security_group_id = aws_security_group.sg_instance.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 22
-  ip_protocol       = "tcp"
-  to_port           = 22
 }
 
 data "local_file" "public_key" {
@@ -31,8 +22,26 @@ resource "aws_key_pair" "public_key" {
   public_key = data.local_file.public_key.content
 }
 
+resource "aws_vpc_security_group_ingress_rule" "ingress_rules_ping_instance" {
+  security_group_id = aws_security_group.sg_instance.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 8
+  to_port           = 0
+  ip_protocol       = "icmp"
+}
+
+// FIXME For debug
+resource "aws_vpc_security_group_ingress_rule" "ingress_rule_ssh_instance" {
+  security_group_id = aws_security_group.sg_instance.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+}
+
+
 // FIXME to ingress from load balancer
-resource "aws_vpc_security_group_ingress_rule" "ingress_rules_instance" {
+resource "aws_vpc_security_group_ingress_rule" "ingress_rule_http_instance" {
   security_group_id = aws_security_group.sg_instance.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 80
@@ -40,11 +49,12 @@ resource "aws_vpc_security_group_ingress_rule" "ingress_rules_instance" {
   to_port           = 80
 }
 
-resource "aws_vpc_security_group_egress_rule" "egress_rules_app" {
+resource "aws_vpc_security_group_egress_rule" "egress_rules_instance" {
   security_group_id = aws_security_group.sg_instance.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1"
 }
+
 
 resource "aws_iam_policy" "instance_policy" {
   name        = "blue-green-demo-instance-policy"
