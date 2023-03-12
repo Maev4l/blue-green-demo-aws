@@ -57,3 +57,10 @@ terraform apply -auto-approve -var traffic_distribution=even -var enable_blue_en
 ```shell
 terraform apply -auto-approve -var-file="stop-all.tfvars"
 ```
+
+## Resources
+
+- https://aws.amazon.com/blogs/compute/setting-up-aws-privatelink-for-amazon-ecs-and-amazon-ecr/
+- https://medium.com/@prabhupj/terraform-way-to-run-aws-ec2-instances-in-a-private-subnet-and-load-balancing-with-an-application-98da5a11d4f1 (without NAT Gateway)
+- https://www.middlewareinventory.com/blog/aws-blue-green-deployment-and-canary-tests-using-terraform/
+- https://medium.com/hackernoon/blue-green-infrastructure-with-terraform-d5f9e8f79ed4

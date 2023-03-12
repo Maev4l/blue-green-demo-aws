@@ -30,6 +30,7 @@ resource "aws_security_group" "sg_lb" {
   vpc_id      = aws_vpc.main.id
 }
 
+// Allow all incoming HTTP requests
 resource "aws_vpc_security_group_ingress_rule" "ingress_rules_lb" {
   security_group_id = aws_security_group.sg_lb.id
   cidr_ipv4         = "0.0.0.0/0"
@@ -38,13 +39,11 @@ resource "aws_vpc_security_group_ingress_rule" "ingress_rules_lb" {
   to_port           = 80
 }
 
-// FIXME to egress to the private instance
+// Allow only outgoing requests to the private instances
 resource "aws_vpc_security_group_egress_rule" "egress_rules_lb" {
-  security_group_id = aws_security_group.sg_lb.id
-  cidr_ipv4         = "0.0.0.0/0"
-
-  ip_protocol = "-1"
-
+  security_group_id            = aws_security_group.sg_lb.id
+  referenced_security_group_id = aws_security_group.sg_instance.id
+  ip_protocol                  = "-1"
 }
 
 resource "aws_lb" "lb" {
@@ -75,7 +74,6 @@ resource "aws_lb_listener" "app" {
       stickiness {
         duration = 1
       }
-
     }
   }
 }

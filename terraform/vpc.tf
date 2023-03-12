@@ -94,6 +94,8 @@ resource "aws_security_group" "sg_vpc_endpoint" {
   vpc_id      = aws_vpc.main.id
 }
 
+// Allow only incoming requests from the private subnets, where the application is hosted
+// and only for HTTPS protocol
 resource "aws_vpc_security_group_ingress_rule" "ingress_rule_https_vpc_endpoint" {
   count = var.private_subnet_count
 
