@@ -1,4 +1,22 @@
+provider "aws" {
+  region = var.region
+  default_tags {
+    tags = {
+      "owner"       = "terraform"
+      "application" = "blue-green-demo"
+    }
+  }
+}
 
+terraform {
+  backend "s3" {
+    bucket         = "bg-demo-tf-state"
+    region         = "eu-central-1"
+    key            = "bg-demo-app-infra/terraform.init.tfstate"
+    encrypt        = "true"
+    dynamodb_table = "lock-terraform-state"
+  }
+}
 
 locals {
   repositories = [
