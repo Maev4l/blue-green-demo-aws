@@ -61,7 +61,7 @@ build {
       "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
       "sudo apt-get update",
       "sudo apt-get -qy install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin",
-      "sudo usermod -aG docker ubuntu",
+      "sudo usermod -aG docker ubuntu"
     ]
   }
 
@@ -69,7 +69,9 @@ build {
     inline = [
       "echo Install Amazon ECR credential helper",
       "curl https://amazon-ecr-credential-helper-releases.s3.us-east-2.amazonaws.com/0.6.0/linux-amd64/docker-credential-ecr-login -o docker-credential-ecr-login",
-      "mv docker-credential-ecr-login /user/local/bin"
+      "sudo mv docker-credential-ecr-login /usr/local/bin",
+      "sudo chmod +x /usr/local/bin/docker-credential-ecr-login",
+      "mkdir -p ~/.docker",
     ]
   }
 
