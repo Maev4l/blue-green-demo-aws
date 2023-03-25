@@ -43,6 +43,14 @@ build {
     "source.amazon-ebs.ubuntu"
   ]
 
+  # see: https://developer.hashicorp.com/packer/docs/debugging#issues-installing-ubuntu-packageshttps://developer.hashicorp.com/packer/docs/debugging#issues-installing-ubuntu-packages
+  provisioner "shell" {
+    inline = [
+      "echo Wait for cloud-init",
+      "cloud-init status --wait",
+    ]
+  }
+
   provisioner "shell" {
     inline = [
       "echo Update OS",
