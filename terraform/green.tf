@@ -53,7 +53,7 @@ resource "aws_autoscaling_group" "green_asg" {
 
   tag {
     key                 = "Name"
-    value               = "Green"
+    value               = "Green - ${var.green_app_version}"
     propagate_at_launch = true
   }
 
